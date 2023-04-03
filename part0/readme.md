@@ -1,2 +1,2 @@
 # Part 0 exercises
-image.png
+## Exercise 0.4: new note
