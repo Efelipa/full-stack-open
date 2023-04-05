@@ -1,1 +1,1 @@
-# The full stack open course 2023
+# The full stack open course 2022
