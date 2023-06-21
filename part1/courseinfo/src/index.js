@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
+
 // Const-definitions
 const Header = (prop) => {
   let titleHeader = prop.title.name
@@ -38,7 +39,30 @@ const Total = (prop) => {
     </div>
   )
 }
+
+const Hello = ({name, age}) => {
+  const bornYear = () => new Date().getFullYear() - age;
+  return (
+    <div>
+      <p>
+        Hello {name}, you are {age} years old.
+      </p>
+      <p>
+        So, probably you born in {bornYear()}
+      </p>
+    </div>
+  )
+}
+
 const App = () => {
+  const [counter, setCounter] = useState(0);
+
+  const handleClick = () => {
+    setCounter(counter + 1)
+  }
+  
+
+  
   const course = {
     name: 'Half Stack application development',
     parts: [
@@ -56,11 +80,16 @@ const App = () => {
       }
     ]
   }
+
   return (
     <>
       <Header title={course}/>
       <Content parts={course.parts}/>
       <Total parts={course.parts}/>
+      <Hello name='Maya' age={26+10}/>
+      <div>{counter}</div>
+      <button onClick={handleClick}>Click me</button>
+      <button onClick={() => {setCounter(0)}}>Reset</button>
     </>
   )
 }
