@@ -1,71 +1,70 @@
-import React, { useState } from "react";
-import { Filter } from "./components/Filter";
-import { PersonForm } from "./components/PersonForm";
-import { Persons } from "./components/Persons";
+import { useState } from 'react'
+import './App.css'
+import { Filter } from './components/Filter';
+import { ContactForm } from './components/ContactForm';
+import { Persons } from './components/Persons';
 
 const App = () => {
-    const [persons, setPersons] = useState([
+    // Setting the hooks
+    const [ persons, setPersons ] = useState([
         { name: 'Arto Hellas', number: '040-123456' },
         { name: 'Ada Lovelace', number: '39-44-5323523' },
         { name: 'Dan Abramov', number: '12-43-234345' },
         { name: 'Mary Poppendieck', number: '39-23-6423122' }
-    ]);
-    const [newName, setNewName] = useState('');
-    const [newNumber, setNewNumber] = useState('');
-    const [searchValue, setSearchValue] = useState('');
-    const [filteredPersons, setFilteredPersons] = useState([...persons]);
+    ]) 
+    const [ newName, setNewName ] = useState('');
+    const [newNumber, setNewNumber ] = useState('');
+    const [filter, setFilter] = useState('');
 
-    const handleNoteChange = (e) => {
-        setNewName(e.target.value);        
+  // Handle Clicks
+    const handleChange = (handler) => (e) => {
+        handler(e.target.value);
     }
-
-    const handleNumberChange = (e) => {
-        setNewNumber(e.target.value);
-    }
-
-    const createNewPerson = (e) => {
+    const addPerson = (e) => {
         e.preventDefault();
-        const newPerson = {
+        const createPerson = {
             name: newName,
             number: newNumber,
-        };
-        const existingPerson = persons.find(person => person.name === newPerson.name);
-        const existingNumber = persons.find(person => person.number === newPerson.number);
-        if (newPerson.name === '' || newPerson.number === '') {
-            alert('You need a name and number to proceed');
-        } else if (existingPerson) {
-            alert(`${newPerson.name} is already added to the phonebook.`)
-        } else if (existingNumber) {
-            alert(`${newPerson.number} is already added to the phonebook.`)
-        } else {
-            setPersons([...persons, newPerson]);
-            setNewName('');
-            setNewNumber('');
-            setFilteredPersons([...persons, newPerson]);
-        }
+    }
+    const personExists = persons.find(person => person.name === createPerson.name);
+    const numberExists = persons.find(person => person.number === createPerson.number);
+
+    if(createPerson.name === '' || createPerson.number === '') {
+        alert ('You must specify a name and a number to create a contact.')
+    } else if(personExists) {
+        alert (`${newName} is already added to the phonebook`)
+    } else if(numberExists) {
+        alert (`The current number is already added to the phonebook`)
+    } else {
+        let personsCopy = [...persons];
+        setPersons(personsCopy.concat(createPerson));
+        setNewName('');
+        setNewNumber('');
+    }
+}
+    const filterPerson = (handler) => (e) => {
+        handler(e.target.value);
+    }
+  // Filter methods
+    let results = [];
+    if(!filter) {
+        results = persons;
+    } else {
+    const filterPersons = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
+    results = filterPersons;
     }
 
-    const searchPerson = (e) => {
-        const filterValue = e.target.value;
-        setSearchValue(filterValue);
-        if (filterValue === '') {
-            setFilteredPersons([...persons]);
-        } else {
-            setFilteredPersons(persons.filter(person => person.name.toLowerCase().includes(filterValue.toLowerCase())));
-        }
-    }
 
     return (
-        <div>
+        <main>
             <h2>Phonebook</h2>
-            <Filter searchPerson={searchPerson} searchValue={searchValue}/>
-            <h3>Add a new</h3>
-            <PersonForm handleNumberChange={handleNumberChange} handleNoteChange={handleNoteChange} createNewPerson={createNewPerson} newName={newName} newNumber={newNumber}/>
-            
-            <h2>Numbers</h2>
-            <Persons filteredPersons={filteredPersons}/>
-        </div>
+            <Filter filterPerson={filterPerson} setFilter={setFilter} filter={filter}/>
+            <h3>Add a new contact</h3>
+            <ContactForm addPerson={addPerson} handleChange={handleChange} newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber}/>
+            <h3>Numbers</h3>
+            <Persons results={results}/>
+        </main>
     )
 }
 
-export default App;
+export default App

@@ -1,10 +1,7 @@
-export const Filter = ({searchPerson, searchValue}) => {
+export const Filter = ({filterPerson, setFilter, filter}) => {
     return (
-        <div className="mb-3">
-            <label className="gap">
-                filter shown with:   
-                <input type="text" onChange={searchPerson} value={searchValue} />
-            </label>
+        <div className="filter">
+            Filter shown with: <input onChange={filterPerson(setFilter)} value={filter} placeholder='Search the contact'/>
         </div>
     )
-}
+};
