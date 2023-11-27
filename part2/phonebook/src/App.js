@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios';
 import './App.css'
 import { Filter } from './components/Filter';
 import { ContactForm } from './components/ContactForm';
@@ -6,17 +7,22 @@ import { Persons } from './components/Persons';
 
 const App = () => {
     // Setting the hooks
-    const [ persons, setPersons ] = useState([
-        { name: 'Arto Hellas', number: '040-123456' },
-        { name: 'Ada Lovelace', number: '39-44-5323523' },
-        { name: 'Dan Abramov', number: '12-43-234345' },
-        { name: 'Mary Poppendieck', number: '39-23-6423122' }
-    ]) 
+    const [ persons, setPersons ] = useState([]) 
     const [ newName, setNewName ] = useState('');
     const [newNumber, setNewNumber ] = useState('');
     const [filter, setFilter] = useState('');
+    const API = 'http://localhost:3001/persons';
+    const hook = () => {
+        axios.get(API)
+            .then(res => {
+                setPersons(res.data)
+            })
+    }
+    // State Effects
+    useEffect(hook, []);
 
-  // Handle Clicks
+
+    // Handle Clicks
     const handleChange = (handler) => (e) => {
         handler(e.target.value);
     }
@@ -50,7 +56,7 @@ const App = () => {
     if(!filter) {
         results = persons;
     } else {
-    const filterPersons = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
+    const filterPersons = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()));
     results = filterPersons;
     }
 
