@@ -4,6 +4,7 @@ import './App.css'
 import { Filter } from './components/Filter';
 import { ContactForm } from './components/ContactForm';
 import { Persons } from './components/Persons';
+import { Notification } from './components/Notification';
 /* Utilities to get, create and delete contacts */
 import util from './services/contact';
 
@@ -12,12 +13,16 @@ const App = () => {
     // Setting the hooks
         // Array of persons
         const [ persons, setPersons ] = useState([])
-        // useState with a initial string value, used to search for persons
+        // useState with a initial string value, used to search for persons by his names
         const [ newName, setNewName ] = useState('');
         // useState with a initial string value, used to search for persons by phone number
         const [newNumber, setNewNumber ] = useState('');
-
+        // string used to filter persons by name or number
         const [filter, setFilter] = useState('');
+        // message
+        const [message, setMessage] = useState('');
+        const [loading, setLoading] = useState();
+        const [messageStyle, setMessageStyle] = useState('')
     
     // State Effects
     useEffect(() => {
@@ -51,6 +56,21 @@ const App = () => {
                 setPersons(persons.map(person => person.id !== personExists.id ? person : returnedNote));
                 setNewName('');
                 setNewNumber('');
+                setLoading(true);
+                setMessage(`${returnedNote.name} updated`);
+                setMessageStyle('success');
+                setInterval(() => {
+                    setLoading(false);
+                }, 2000);
+            })
+            .catch(err => {
+                setLoading(true);
+                setMessageStyle(`error`);
+                setMessage(`${newName} was already deleted from the server.`);
+                setInterval(() => {
+                    setLoading(false);
+                }, 3000);
+                setPersons(persons.filter(person => person.id !== personExists.id));
             });
         } else {
             let personsCopy = [...persons];
@@ -60,7 +80,21 @@ const App = () => {
                 setPersons(personsCopy.concat(returnedNote));
                 setNewName('');
                 setNewNumber('');
+                setLoading(true);
+                setMessage(`Added ${returnedNote.name}`);
+                setMessageStyle('success');
+                setInterval(() => {
+                    setLoading(false);
+                }, 2000);
             })
+            .catch(err => {
+                setLoading(true);
+                setMessageStyle('error');
+                setMessageStyle(err);
+                setInterval(() => {
+                    setLoading(false);
+                }, 2000);
+            });
         }
     }
 
@@ -91,6 +125,7 @@ const App = () => {
     return (
         <main>
             <h2>Phonebook</h2>
+            {(loading && <Notification message={message} style={messageStyle}/>)}
             <Filter filterPerson={filterPerson} setFilter={setFilter} filter={filter}/>
             <h3>Add a new contact</h3>
             <ContactForm addPerson={addPerson} handleChange={handleChange} newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber}/>

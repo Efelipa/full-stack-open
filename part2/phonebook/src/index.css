@@ -21,14 +21,30 @@ button[type='submit'] {
 
 .contact-list > li {
   display: inline-block;
+  margin-top: 15px;
 }
 .delete-btn {
   display: inline;
   margin-inline: 10px;
-  padding: 2px 5px;
-  background-color: red;
+  padding: 5px 8px;
+  background-color: skyblue;
   color: white;
-  border: none;
+  border: 2px solid black;
   border-radius: 10px;
   cursor: pointer;
+}
+.notification {
+  font-family: italic;
+  border-style: solid;
+  background: lightgray;
+  padding: 6px;
+  margin-bottom: 10px;
+}
+.success {
+  border-color: green;
+  color: green;
+}
+.error {
+  border-color: red;
+  color: red;
 }
