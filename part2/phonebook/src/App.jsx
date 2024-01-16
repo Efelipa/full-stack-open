@@ -10,15 +10,18 @@ import util from './services/contact';
 
 const App = () => {
     // Setting the hooks
-    const [ persons, setPersons ] = useState([]) 
-    const [ newName, setNewName ] = useState('');
-    const [newNumber, setNewNumber ] = useState('');
-    const [filter, setFilter] = useState('');
+        // Array of persons
+        const [ persons, setPersons ] = useState([])
+        // useState with a initial string value, used to search for persons
+        const [ newName, setNewName ] = useState('');
+        // useState with a initial string value, used to search for persons by phone number
+        const [newNumber, setNewNumber ] = useState('');
+
+        const [filter, setFilter] = useState('');
     
     // State Effects
     useEffect(() => {
-        util
-            .getContacts()
+        util.getContacts()
             .then(initialContacts => {
                 setPersons(initialContacts);
             })
@@ -42,7 +45,7 @@ const App = () => {
         if(createPerson.name === '' || createPerson.number === '') {
             alert ('You must specify a name and a number to create a contact.')
         } else if(personExists) {
-            window.confirm(`**${newName}** is already added to the phonebook, replace the old number with a new one?`)
+            window.confirm(`**${newName}** is already added to the phone book, replace the old number with a new one?`)
             util.updateContact(personExists.id, createPerson)
             .then(returnedNote => {
                 setPersons(persons.map(person => person.id !== personExists.id ? person : returnedNote));
@@ -60,9 +63,11 @@ const App = () => {
             })
         }
     }
+
     const filterPerson = (handler) => (e) => {
         handler(e.target.value);
     }
+
     // Filter methods
     let results = [];
     if(!filter) {
@@ -71,8 +76,9 @@ const App = () => {
     const filterPersons = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()));
     results = filterPersons;
     }
-    const deletePerson = (id) => {
-        if(window.confirm('Are you sure you want to delete this contact?')) {
+
+    const deletePerson = (id, name) => {
+        if(window.confirm(`Are you sure you want to delete ${name} contact?`)) {
             util.deleteContact(id)
             .then(returnedNote => {
                 setPersons(persons.filter(person => person.id !== id));

@@ -6,8 +6,8 @@ export const Persons = ({results, handleClick}) => {
                 {results.map((person) => {
                     return (
                         <div key={person.id} className="contact-list">
-                        <li>{person.name}: <strong>{person.number}</strong></li>
-                        <button onClick={() => handleClick(person.id)} className="delete-btn">Delete contact</button>
+                        <li className="note">{person.name}: <strong>{person.number}</strong></li>
+                        <button onClick={() => handleClick(person.id, person.name)} className="delete-btn">Delete contact</button>
                         </div>
                     )
                 })}
